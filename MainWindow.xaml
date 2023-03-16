@@ -85,6 +85,22 @@
                     Grid.Row="6"
                     Grid.ColumnSpan="2">
             <Label x:Name="lblFajlnev"/>
+            <Label Content="Jegyek száma:"/>
+            <Label x:Name="lblJegyek"
+                   Foreground="Red"/>
+            <Label Content="Átlag:"/>
+            <Label x:Name="lblAtlag"
+                   Foreground="Red"/>
         </StackPanel>
+        <RadioButton x:Name="rbNevVK"
+                     Grid.Row="7"
+                     Content="Vezetéknév->Keresztnév"
+                     IsChecked="True"
+                     Checked="radio_Checked"/>
+        <RadioButton x:Name="rbNevKV"
+                     Grid.Row="7"
+                     Grid.Column="2"
+                     Content="Keresztnév->Vezetéknév"
+                     Checked="radio_Checked"/>
     </Grid>
 </Window>

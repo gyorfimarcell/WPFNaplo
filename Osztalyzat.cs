@@ -21,7 +21,7 @@ namespace WpfOsztalyzas
             this.jegy = jegy;
         }
 
-        public string Nev { get => nev; }
+        public string Nev { get => nev; set => nev = value; }
         public string Datum { get => datum; }
         public string Tantargy { get => tantargy; }
         public int Jegy { get => jegy; }

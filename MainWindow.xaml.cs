@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -24,11 +25,15 @@ namespace WpfOsztalyzas
     {
         string fajlNev;
         //Így minden metódus fogja tudni használni.
-        List<Osztalyzat> jegyek = new List<Osztalyzat>();
+        ObservableCollection<Osztalyzat> jegyek = new ObservableCollection<Osztalyzat>();
 
         public MainWindow()
         {
             InitializeComponent();
+            FajlValasztas();
+        }
+
+        private void FajlValasztas() {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 fajlNev = openFileDialog.FileName;
@@ -76,7 +81,7 @@ namespace WpfOsztalyzas
 
         private void btnBetolt_Click(object sender, RoutedEventArgs e)
         {
-            JegyekBetolt();
+            FajlValasztas();
         }
 
         private void JegyekBetolt() {
@@ -94,7 +99,17 @@ namespace WpfOsztalyzas
             //A Datagrid adatforrása a jegyek nevű lista lesz.
             //A lista objektumokat tartalmaz. Az objektumok lesznek a rács sorai.
             //Az objektum nyilvános tulajdonságai kerülnek be az oszlopokba.
-            dgJegyek.ItemsSource = jegyek;
+            if (rbNevVK.IsChecked == true)
+            {
+                dgJegyek.ItemsSource = jegyek;
+            }
+            else
+            {
+                  dgJegyek.ItemsSource = jegyek.Select(osztalyzat => { osztalyzat.Nev = osztalyzat.ForditottNev(); return osztalyzat; }) ;  
+            }
+            
+            lblJegyek.Content = jegyek.Count;
+            lblAtlag.Content = Math.Round(jegyek.Average(osztalyzat => osztalyzat.Jegy), 1);
         }
 
         private void sliJegy_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -102,19 +117,13 @@ namespace WpfOsztalyzas
             lblJegy.Content = sliJegy.Value; //Több alternatíva van e helyett! Legjobb a Data Binding!
         }
 
-
-        //todo Felület bővítése: Az XAML átszerkesztésével biztosítsa, hogy láthatóak legyenek a következők!
-        // - A naplóban lévő jegyek száma
-        // - Az átlag
-
-        //todo Új elemek frissítése: Figyeljen rá, ha új jegyet rögzít, akkor frissítse a jegyek számát és az átlagot is!
-
-        //todo Helyezzen el alkalmas helyre 2 rádiónyomógombot!
-        //Feliratok: [■] Vezetéknév->Keresztnév [O] Keresztnév->Vezetéknév
-        //A táblázatban a név azserint szerepeljen, amit a rádiónyomógomb mutat!
-        //A feladat megoldásához használja fel a ForditottNev metódust!
-        //Módosíthatja az osztályban a Nev property hozzáférhetőségét!
-        //Megjegyzés: Felételezzük, hogy csak 2 tagú nevek vannak
+        private void radio_Checked(object sender, RoutedEventArgs e)
+        {
+            if (fajlNev != null)
+            {
+                JegyekBetolt();
+            }
+        }
     }
 }
 
